@@ -10,7 +10,7 @@ public class Event
 
     [Required]
     [StringLength(150, MinimumLength = 2)]
-    [Display(Name = "Nazwa wydarzeńia")]
+    [Display(Name = "Nazwa wydarzenia")]
     public string Name { get; set; } = string.Empty;
 
     [Display(Name = "Rodzaj")]
@@ -43,19 +43,19 @@ public class Event
     public string? Description { get; set; }
 
     [Range(0, 9999)]
-    [Display(Name = "Stojace – plyta (zl)")]
+    [Display(Name = "Stojace – plyta (zł)")]
     public int PriceStanding { get; set; }
 
     [Range(0, 9999)]
-    [Display(Name = "Siedzace C (zl)")]
+    [Display(Name = "Siedzace C (zł)")]
     public int PriceSeatedC { get; set; }
 
     [Range(0, 9999)]
-    [Display(Name = "Siedzace B (zl)")]
+    [Display(Name = "Siedzace B (zł)")]
     public int PriceSeatedB { get; set; }
 
     [Range(0, 9999)]
-    [Display(Name = "Siedzace A – najlepszy widok (zl)")]
+    [Display(Name = "Siedzace A – najlepszy widok (zł)")]
     public int PriceSeatedA { get; set; }
 
     [Range(0, 9999)]
@@ -63,11 +63,11 @@ public class Event
     public int PriceVip { get; set; }
  
     [Range(0, 9999)]
-    [Display(Name = "Bilet jednodniowy (zl)")]
+    [Display(Name = "Bilet jednodniowy (zł)")]
     public int PriceDayTicket { get; set; }
    
     [Range(0, 9999)]
-    [Display(Name = "Karnet pelny (zl)")]
+    [Display(Name = "Karnet pełny (zł)")]
     public int PriceFullPass { get; set; }
 
     [Display(Name = "Miejsce")]

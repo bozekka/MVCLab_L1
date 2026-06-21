@@ -36,7 +36,7 @@ public enum TicketCategory
     FullPass = 5,
     [Display(Name = "Bilet jednodniowy")]
     DayTicket = 6
-}
+} 
 
 public enum MusicGenre
 {

@@ -26,3 +26,4 @@ public class Band
 
     public ICollection<EventBand> EventBands { get; set; } = new List<EventBand>();
 }
+ 

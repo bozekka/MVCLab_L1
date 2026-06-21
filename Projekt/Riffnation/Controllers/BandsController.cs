@@ -17,7 +17,7 @@ public class BandsController : Controller
         var bands = await _db.Bands.OrderBy(b => b.Name).ToListAsync();
         return View(bands);
     }
-
+     
     public IActionResult Create()
     {
         if (!IsAdmin) return RedirectToAction("Index");
@@ -32,7 +32,7 @@ public class BandsController : Controller
         {
             _db.Bands.Add(band);
             await _db.SaveChangesAsync();
-            TempData["Message"] = "Dodano zespol: " + band.Name;
+            TempData["Message"] = "Dodano zespół: " + band.Name;
             return RedirectToAction(nameof(Index));
         }
         return View(band);
@@ -78,7 +78,7 @@ public class BandsController : Controller
         if (!IsAdmin) return RedirectToAction("Index");
         var band = await _db.Bands.FindAsync(id);
         if (band is not null) { _db.Bands.Remove(band); await _db.SaveChangesAsync(); }
-        TempData["Message"] = "Usuńieto zespol.";
+        TempData["Message"] = "Usunięto zespół.";
         return RedirectToAction(nameof(Index));
     }
 }

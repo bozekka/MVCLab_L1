@@ -34,3 +34,4 @@ public static class PasswordHelper
     private static byte[] Pbkdf2(string password, byte[] salt) =>
         KeyDerivation.Pbkdf2(password, salt, KeyDerivationPrf.HMACSHA256, Iterations, HashBytes);
 }
+ 

@@ -16,3 +16,4 @@ public class EventListViewModel
 
     public IEnumerable<string> Cities { get; set; } = new List<string>();
 }
+ 

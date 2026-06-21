@@ -49,3 +49,4 @@ public class ApplicationDbContext : DbContext
         mb.Entity<AppUser>().HasIndex(u => u.Email).IsUnique();
     }
 }
+ 

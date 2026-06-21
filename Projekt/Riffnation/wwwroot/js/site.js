@@ -1,5 +1,4 @@
-// Drobne usprawnienia UI. Formularz filtra wysyłany jest standardowo (GET).
-// Auto-ukrywanie komunikatu flash po kilku sekundach.
+
 document.addEventListener('DOMContentLoaded', function () {
     var flash = document.querySelector('.flash');
     if (flash) {
@@ -11,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Zamykanie dropdownu po kliknięciu poza nim
 document.addEventListener('click', function (e) {
     var menus = document.querySelectorAll('.user-menu');
     menus.forEach(function (m) {

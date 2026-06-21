@@ -13,3 +13,4 @@ public class EventBand
     [Display(Name = "Headliner")]
     public bool IsHeadliner { get; set; }
 }
+ 

@@ -1,20 +1,16 @@
-/* =========================================================
-   Metal & Rock Bilety 2026 — arkusz stylów
-   Estetyka: plakat koncertowy. Ciemne tło, kondensowany
-   krój nagłówkowy, krwistoczerwony akcent, bursztyn = headliner.
-   ========================================================= */
+
 
 :root {
-    --bg:        #131110;   /* ciepła czerń */
-    --surface:   #1d1a18;   /* karty / paski */
+    --bg:        #131110;   
+    --surface:   #1d1a18;   
     --surface-2: #262220;
-    --line:      #36302c;   /* hairline */
-    --ink:       #ece4da;   /* tekst główny */
-    --muted:     #9c9088;   /* tekst drugorzędny */
-    --accent:    #c81d25;   /* krwista czerwień */
-    --accent-ink:#ff5a5f;   /* czerwień na ciemnym */
-    --gold:      #e0a458;   /* headliner / wyróżnienie */
-    --green:     #5fae6b;   /* dostępność */
+    --line:      #36302c;   
+    --ink:       #ece4da;   
+    --muted:     #9c9088;   
+    --accent:    #c81d25;   
+    --accent-ink:#ff5a5f;  
+    --gold:      #e0a458;   
+    --green:     #5fae6b;   
     --radius:    4px;
 }
 
@@ -37,7 +33,7 @@ body {
 a { color: var(--accent-ink); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-/* ---------- Nagłówek strony (jak winieta plakatu) ---------- */
+
 .site-header {
     border-bottom: 2px solid var(--accent);
     background: linear-gradient(180deg, #161312 0%, #0e0c0b 100%);
@@ -89,7 +85,7 @@ a:hover { text-decoration: underline; }
 }
 .nav-cta:hover { background: #e22630; }
 
-/* ---------- Układ ---------- */
+
 .container {
     width: 100%;
     max-width: 1080px;
@@ -107,7 +103,7 @@ a:hover { text-decoration: underline; }
     font-size: 0.95rem;
 }
 
-/* ---------- Winieta sekcji (sygnatura) ---------- */
+
 .poster-head { margin: 0 0 28px; }
 .eyebrow {
     color: var(--accent-ink);
@@ -128,13 +124,13 @@ a:hover { text-decoration: underline; }
 }
 .poster-sub { color: var(--muted); max-width: 60ch; margin: 10px 0 0; }
 
-/* Pasek statystyk na stronie głównej */
+
 .stats { display: flex; gap: 28px; flex-wrap: wrap; margin: 26px 0 0; }
 .stat { border-left: 2px solid var(--accent); padding-left: 12px; }
 .stat .num { font-family: "Anton", Impact, sans-serif; font-size: 2rem; line-height: 1; }
 .stat .lbl { color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; }
 
-/* ---------- Filtr ---------- */
+
 .filter-bar {
     background: var(--surface);
     border: 1px solid var(--line);
@@ -149,7 +145,7 @@ a:hover { text-decoration: underline; }
 .field { display: flex; flex-direction: column; gap: 4px; }
 .field label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
 
-/* ---------- Formularze ---------- */
+
 input[type=text], input[type=email], input[type=number], input[type=date],
 select, textarea {
     width: 100%;
@@ -186,7 +182,7 @@ textarea { min-height: 96px; resize: vertical; }
 .validation-summary-errors { color: var(--accent-ink); font-size: 0.88rem; }
 .input-validation-error { border-color: var(--accent) !important; }
 
-/* ---------- Przyciski ---------- */
+
 .btn {
     display: inline-block;
     border: 1px solid var(--line);
@@ -209,7 +205,7 @@ textarea { min-height: 96px; resize: vertical; }
 .btn-sm { padding: 5px 10px; font-size: 0.72rem; }
 .actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
 
-/* ---------- Tabela ---------- */
+
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
 table.data {
     width: 100%;
@@ -235,7 +231,7 @@ table.data tbody tr:hover { background: var(--surface-2); }
 .evt-name a { color: var(--ink); }
 .evt-name a:hover { color: var(--accent-ink); }
 
-/* ---------- Znaczniki ---------- */
+
 .tag {
     display: inline-block;
     font-size: 0.68rem;
@@ -254,7 +250,7 @@ table.data tbody tr:hover { background: var(--surface-2); }
 .seats-low  { color: var(--gold); font-weight: 600; }
 .seats-none { color: var(--accent-ink); font-weight: 600; }
 
-/* ---------- Karta szczegółów wydarzenia ---------- */
+
 .detail-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: start; }
 .detail-card {
     background: var(--surface);
@@ -283,7 +279,7 @@ table.data tbody tr:hover { background: var(--surface-2); }
 .muted { color: var(--muted); }
 .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
 
-/* ---------- Responsywność ---------- */
+
 @media (max-width: 820px) {
     .filter-bar { grid-template-columns: 1fr 1fr; }
     .detail-grid { grid-template-columns: 1fr; }
@@ -293,12 +289,12 @@ table.data tbody tr:hover { background: var(--surface-2); }
     .filter-bar { grid-template-columns: 1fr; }
 }
 
-/* Dostępność: szanuj redukcję ruchu */
+
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
 }
 
-/* ---------- Stopka ---------- */
+
 .site-footer {
     flex-shrink: 0;
     border-top: 1px solid var(--line);
@@ -308,12 +304,12 @@ table.data tbody tr:hover { background: var(--surface-2); }
     padding: 20px;
 }
 
-/* ── Panel autoryzacji ─────────────────────────────────────── */
+
 .auth-wrap { max-width: 420px; }
 .auth-alt { color: var(--muted); margin-top: 14px; font-size: .9rem; }
 .auth-alt a { color: var(--accent-ink); }
 
-/* ── Menu użytkownika ──────────────────────────────────────── */
+
 .user-menu { position: relative; }
 .user-btn {
     display: flex; align-items: center; gap: 7px;
@@ -346,15 +342,13 @@ table.data tbody tr:hover { background: var(--surface-2); }
 }
 .dropdown-item:hover { background: var(--surface-2); color: var(--ink); }
 
-/* ── Odznaka statusu biletów ───────────────────────────────── */
+
 .badge-sold   { color: var(--accent-ink); font-weight: 700; font-size: .82rem; }
 .badge-low    { color: var(--gold);       font-weight: 700; font-size: .82rem; }
 .badge-ok     { color: var(--green);      font-weight: 700; font-size: .82rem; }
 
-/* ── Opis w widoku szczegółów lineupu ─────────────────────── */
 .band-desc { color: var(--muted); font-size: .87rem; margin-top: 2px; }
 
-/* ── CTA banner na stronie głównej ────────────────────────── */
 .cta-banner {
     display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
     background: var(--surface);
@@ -367,7 +361,6 @@ table.data tbody tr:hover { background: var(--surface-2); }
     color: var(--muted);
 }
 
-/* ── Admin badge w menu ─────────────────────────────────────── */
 .admin-crown { color: var(--gold); margin-right: 4px; }
 .dropdown-label {
     display: block;
@@ -376,7 +369,6 @@ table.data tbody tr:hover { background: var(--surface-2); }
 }
 .dropdown-hr { border: none; border-top: 1px solid var(--line); margin: 4px 0; }
 
-/* ── Tabela cen biletow ─────────────────────────────────────── */
 .ticket-pricing {
     margin-top: 18px;
     border: 1px solid var(--line);
@@ -401,7 +393,6 @@ table.data tbody tr:hover { background: var(--surface-2); }
 .price-row.vip    { color: var(--gold); }
 .price-row strong { font-size: 1rem; }
 
-/* ── Podglad ceny w formularzu rezerwacji ───────────────────── */
 .price-preview {
     background: var(--surface-2);
     border: 1px solid var(--line);
@@ -414,7 +405,6 @@ table.data tbody tr:hover { background: var(--surface-2); }
 }
 .price-preview strong { color: var(--gold); font-size: 1.1rem; }
 
-/* ── Layout formularza rezerwacji ──────────────────────────── */
 .res-layout {
     display: flex;
     gap: 28px;
@@ -422,7 +412,6 @@ table.data tbody tr:hover { background: var(--surface-2); }
     flex-wrap: wrap;
 }
 
-/* ── Naglowek sekcji kategorii ─────────────────────────────── */
 .cat-heading {
     font-family: "Anton", Impact, sans-serif;
     font-weight: 400;
@@ -433,7 +422,6 @@ table.data tbody tr:hover { background: var(--surface-2); }
     color: var(--muted);
 }
 
-/* ── Siatka kart kategorii ─────────────────────────────────── */
 .cat-grid { display: flex; flex-direction: column; gap: 10px; }
 
 .cat-card {
@@ -467,7 +455,6 @@ table.data tbody tr:hover { background: var(--surface-2); }
 }
 .cat-card.selected .cat-price { color: var(--accent-ink); }
 
-/* Odznaki kategorii */
 .cat-badge {
     display: inline-block;
     font-size: .65rem;
@@ -484,7 +471,6 @@ table.data tbody tr:hover { background: var(--surface-2); }
 .cat-badge-seatedC { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
 .cat-badge-vip      { background: var(--gold); color: #111; }
 
-/* ── Podsumowanie kwoty ─────────────────────────────────────── */
 .summary-box {
     margin-top: 16px;
     background: var(--surface);
@@ -514,7 +500,6 @@ table.data tbody tr:hover { background: var(--surface-2); }
     color: var(--gold);
 }
 
-/* ── Karta dnia festiwalu ──────────────────────────────────── */
 .day-card {
     background: var(--surface);
     border: 2px solid var(--line);

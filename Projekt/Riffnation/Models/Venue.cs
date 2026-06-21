@@ -22,3 +22,4 @@ public class Venue
 
     public ICollection<Event> Events { get; set; } = new List<Event>();
 }
+ 

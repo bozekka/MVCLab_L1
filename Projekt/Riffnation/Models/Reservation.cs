@@ -8,7 +8,7 @@ public class Reservation
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "Wybierz wydarzeńie.")]
+    [Required(ErrorMessage = "Wybierz wydarzenie.")]
     public int EventId { get; set; }
     public Event? Event { get; set; }
 

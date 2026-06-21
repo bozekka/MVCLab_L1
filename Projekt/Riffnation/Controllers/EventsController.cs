@@ -42,7 +42,7 @@ public class EventsController : Controller
             Genre = genre, EventType = eventType, City = city, Cities = cities
         });
     }
-
+     
     public async Task<IActionResult> Details(int? id)
     {
         if (id is null) return NotFound();

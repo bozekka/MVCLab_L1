@@ -59,11 +59,11 @@ public class ReservationsController : Controller
 
         if (ev is null)
         {
-            ModelState.AddModelError(nameof(Reservation.EventId), "Wybrane wydarzeńie nie istnieje.");
+            ModelState.AddModelError(nameof(Reservation.EventId), "Wybrane wydarzenie nie istnieje.");
         }
         else if (!ev.CanReserve)
         {
-            ModelState.AddModelError("", "Na to wydarzeńie nie można już zarezerwowac biletów.");
+            ModelState.AddModelError("", "Na to wydarzenie nie można już zarezerwowac biletów.");
         }
         else if (reservation.NumberOfTickets > ev.AvailableSeats)
         {
@@ -79,7 +79,7 @@ public class ReservationsController : Controller
         int pricePerTicket = ComputePrice(ev, reservation.TicketCategory);
         if (pricePerTicket == 0)
         {
-            ModelState.AddModelError("", "Wybrana kategoria nie jest dostępna dla tego wydarzeńia.");
+            ModelState.AddModelError("", "Wybrana kategoria nie jest dostępna dla tego wydarzenia.");
         }
 
         if (reservation.FestivalDayId.HasValue && ev != null)

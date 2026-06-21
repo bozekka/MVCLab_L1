@@ -34,7 +34,7 @@ public static class SeedData
         db.Venues.AddRange(v.Values);
         db.SaveChanges();
 
-       
+        
         var b = new Dictionary<string, Band>
         {
             ["Korpiklaani"]   = new Band { Name = "Korpiklaani",          Genre = MusicGenre.FolkMetal,       Country = "Finlandia",       Description = "Fińscy mistrzowie folk metalu. Skrzypce, akordeon i pijackie chóry." },
