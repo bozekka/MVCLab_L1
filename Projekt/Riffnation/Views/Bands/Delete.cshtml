@@ -1,0 +1,24 @@
+@model Band
+@{
+    ViewData["Title"] = "Usuń zespół";
+}
+
+<section class="poster-head">
+    <p class="eyebrow">Potwierdzenie</p>
+    <h1 class="poster-title">Usuńąć zespół?</h1>
+</section>
+
+<div class="form-card">
+    <dl class="kv">
+        <dt>Nazwa</dt><dd><strong>@Model.Name</strong></dd>
+        <dt>Gatunek</dt><dd>@Model.Genre.GetDisplayName()</dd>
+        <dt>Kraj</dt><dd>@Model.Country</dd>
+    </dl>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="actions">
+            <button type="submit" class="btn btn-danger">Tak, usuń</button>
+            <a class="btn" asp-action="Index">Anuluj</a>
+        </div>
+    </form>
+</div>

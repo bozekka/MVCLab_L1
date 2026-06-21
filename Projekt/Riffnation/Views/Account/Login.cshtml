@@ -1,0 +1,40 @@
+@model Riffnation.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Logowanie";
+}
+
+<section class="poster-head">
+    <p class="eyebrow">Moje konto</p>
+    <h1 class="poster-title">Zaloguj się</h1>
+</section>
+
+<div class="auth-wrap">
+    <div class="form-card">
+        <form asp-action="Login" method="post">
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="email" placeholder="jan@example.com" autofocus />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" type="password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="flex-direction:row;align-items:center;gap:8px;">
+                <input asp-for="RememberMe" type="checkbox" style="width:auto;" />
+                <label asp-for="RememberMe" style="margin:0;font-weight:400;"></label>
+            </div>
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">Zaloguj się</button>
+            </div>
+        </form>
+    </div>
+    <p class="auth-alt">Nie masz konta? <a asp-action="Register">Zarejestruj się</a></p>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

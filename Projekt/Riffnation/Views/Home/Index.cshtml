@@ -1,0 +1,72 @@
+@model IEnumerable<Event>
+@{
+    ViewData["Title"] = "Start";
+    var userName = Context.Session.GetString("UserName");
+}
+
+<section class="poster-head">
+    <p class="eyebrow">Polska &middot; sezon 2026</p>
+    <h1 class="poster-title">Koncerty i festiwale<br>metalowo-rockowe</h1>
+    <p class="poster-sub">
+        Rezerwuj bilety na najmocniejsze wydarzeńia roku -- Impact Festival, Summer Punch,
+        Metallica, Rammstein, System of a Down i wiele więcej.
+    </p>
+    <div class="stats">
+        <div class="stat"><div class="num">@ViewBag.TotalEvents</div><div class="lbl">Wydarzeń</div></div>
+        <div class="stat"><div class="num">@ViewBag.TotalBands</div><div class="lbl">Zespołów</div></div>
+    </div>
+</section>
+
+@if (userName == null)
+{
+    <div class="cta-banner">
+        <span>Zaloguj się, żeby zarezerwowac bilet</span>
+        <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Załóż konto</a>
+        <a class="btn" asp-controller="Account" asp-action="Login">Zaloguj się</a>
+    </div>
+}
+
+<div class="toolbar">
+    <h2 style="font-family:'Anton';text-transform:uppercase;letter-spacing:.04em;margin:0;font-weight:400;font-size:1.3rem;">Nadchodzace wydarzeńia</h2>
+    <a class="btn" asp-controller="Events" asp-action="Index">Zobacz wszystkie</a>
+</div>
+
+<div class="table-wrap">
+    <table class="data">
+        <thead>
+            <tr>
+                <th>Wydarzeńie</th>
+                <th>Termin</th>
+                <th>Miasto</th>
+                <th>Gatunek</th>
+                <th>Cena od</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var e in Model)
+        {
+            var css = e.Status switch {
+                Riffnation.Models.Enums.TicketStatus.SoldOut    => "badge-sold",
+                Riffnation.Models.Enums.TicketStatus.LowTickets => "badge-low",
+                _                                                       => "badge-ok"
+            };
+            <tr>
+                <td class="evt-name"><a asp-controller="Events" asp-action="Details" asp-route-id="@e.Id">@e.Name</a></td>
+                <td style="white-space:nowrap">@e.StartDate.ToString("dd.MM.yyyy")@(e.EndDate.HasValue ? " - " + e.EndDate.Value.ToString("dd.MM") : "")</td>
+                <td>@e.City</td>
+                <td><span class="tag tag-genre">@e.Genre.GetDisplayName()</span></td>
+                <td>@e.TicketPrice zl</td>
+                <td><span class="@css">@e.Status.GetDisplayName()</span></td>
+                <td>
+                    @if (e.CanReserve)
+                    {
+                        <a class="btn btn-sm btn-primary" asp-controller="Reservations" asp-action="Create" asp-route-eventId="@e.Id">Rezerwuj</a>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

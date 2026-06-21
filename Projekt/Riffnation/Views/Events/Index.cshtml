@@ -1,0 +1,113 @@
+@model EventListViewModel
+@{
+    ViewData["Title"] = "Wydarzenia";
+    var isAdmin = Context.Session.GetString("IsAdmin") == "1";
+}
+
+<section class="poster-head">
+    <p class="eyebrow">Katalog</p>
+    <h1 class="poster-title">Wydarzenia</h1>
+</section>
+
+<form method="get" asp-action="Index" class="filter-bar">
+    <div class="field">
+        <label for="searchString">Szukaj (nazwa, miasto, zespol)</label>
+        <input type="text" id="searchString" name="searchString" value="@Model.SearchString" placeholder="np. Metallica, Krakow, Slipknot" />
+    </div>
+    <div class="field">
+        <label for="genre">Gatunek</label>
+        <select id="genre" name="genre" asp-items="Html.GetEnumSelectList<MusicGenre>()">
+            <option value="">-- wszystkie --</option>
+        </select>
+    </div>
+    <div class="field">
+        <label for="eventType">Rodzaj</label>
+        <select id="eventType" name="eventType" asp-items="Html.GetEnumSelectList<EventType>()">
+            <option value="">-- wszystkie --</option>
+        </select>
+    </div>
+    <div class="field">
+        <label for="city">Miasto</label>
+        <select id="city" name="city">
+            <option value="">-- wszystkie --</option>
+            @foreach (var c in Model.Cities)
+            {
+                <option value="@c" selected="@(c == Model.City)">@c</option>
+            }
+        </select>
+    </div>
+    <div class="field">
+        <button type="submit" class="btn btn-primary">Filtruj</button>
+    </div>
+</form>
+
+@if (Model.Genre.HasValue)
+{
+    <script>document.getElementById('genre').value = '@((int)Model.Genre.Value)';</script>
+}
+@if (Model.EventType.HasValue)
+{
+    <script>document.getElementById('eventType').value = '@((int)Model.EventType.Value)';</script>
+}
+
+<div class="toolbar">
+    <span class="muted">Znaleziono: @Model.Events.Count() wydarzeń</span>
+    @if (isAdmin)
+    {
+        <a class="btn btn-primary" asp-action="Create">+ Dodaj wydarzeńie</a>
+    }
+</div>
+
+@if (!Model.Events.Any())
+{
+    <div class="empty">Brak wydarzeń pasujacych do filtrow. <a asp-action="Index">Wyczysc filtr</a>.</div>
+}
+else
+{
+    <div class="table-wrap">
+        <table class="data">
+            <thead>
+                <tr>
+                    <th>Wydarzeńie</th>
+                    <th>Rodzaj</th>
+                    <th>Termin</th>
+                    <th>Miasto</th>
+                    <th>Gatunek</th>
+                    <th>Cena od</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var e in Model.Events)
+            {
+                var css = e.Status switch {
+                    Riffnation.Models.Enums.TicketStatus.SoldOut    => "badge-sold",
+                    Riffnation.Models.Enums.TicketStatus.LowTickets => "badge-low",
+                    _                                                       => "badge-ok"
+                };
+                <tr>
+                    <td class="evt-name"><a asp-action="Details" asp-route-id="@e.Id">@e.Name</a></td>
+                    <td><span class="tag tag-type">@e.EventType.GetDisplayName()</span></td>
+                    <td style="white-space:nowrap">@e.StartDate.ToString("dd.MM.yyyy")@(e.EndDate.HasValue ? " - " + e.EndDate.Value.ToString("dd.MM") : "")</td>
+                    <td>@e.City</td>
+                    <td><span class="tag tag-genre">@e.Genre.GetDisplayName()</span></td>
+                    <td>@e.TicketPrice zl</td>
+                    <td><span class="@css">@e.Status.GetDisplayName()</span></td>
+                    <td style="white-space:nowrap">
+                        @if (e.CanReserve)
+                        {
+                            <a class="btn btn-sm btn-primary" asp-controller="Reservations" asp-action="Create" asp-route-eventId="@e.Id">Rezerwuj</a>
+                        }
+                        @if (isAdmin)
+                        {
+                            <a class="btn btn-sm" asp-action="Edit"   asp-route-id="@e.Id">Edytuj</a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@e.Id">Usuń</a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

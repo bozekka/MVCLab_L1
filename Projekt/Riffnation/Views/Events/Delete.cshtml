@@ -1,0 +1,26 @@
+@model Event
+@{
+    ViewData["Title"] = "Usuń wydarzeńie";
+}
+
+<section class="poster-head">
+    <p class="eyebrow">Potwierdzenie</p>
+    <h1 class="poster-title">Usuńąć wydarzeńie?</h1>
+</section>
+
+<div class="form-card">
+    <p>Czy na pewno chcesz usunąć poniższe wydarzeńie? Tej operacji nie można cofnąć — usunięte zostaną także powiązane rezerwacje.</p>
+    <dl class="kv">
+        <dt>Nazwa</dt><dd><strong>@Model.Name</strong></dd>
+        <dt>Termin</dt><dd>@Model.StartDate.ToString("dd.MM.yyyy")@(Model.EndDate.HasValue ? $" – {Model.EndDate.Value:dd.MM.yyyy}" : "")</dd>
+        <dt>Miasto</dt><dd>@Model.City</dd>
+        <dt>Miejsce</dt><dd>@(Model.Venue?.Name ?? "—")</dd>
+    </dl>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="actions">
+            <button type="submit" class="btn btn-danger">Tak, usuń</button>
+            <a class="btn" asp-action="Index">Anuluj</a>
+        </div>
+    </form>
+</div>

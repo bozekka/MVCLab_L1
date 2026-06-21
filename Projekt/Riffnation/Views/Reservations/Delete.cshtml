@@ -1,0 +1,25 @@
+@model Reservation
+@{
+    ViewData["Title"] = "Anuluj rezerwację";
+}
+
+<section class="poster-head">
+    <p class="eyebrow">Potwierdzenie</p>
+    <h1 class="poster-title">Anulować rezerwację?</h1>
+</section>
+
+<div class="form-card">
+    <dl class="kv">
+        <dt>Wydarzeńie</dt><dd><strong>@(Model.Event?.Name ?? "—")</strong></dd>
+        <dt>Osoba</dt><dd>@Model.CustomerName</dd>
+        <dt>E-mail</dt><dd>@Model.Email</dd>
+        <dt>Bilety</dt><dd>@Model.NumberOfTickets</dd>
+    </dl>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="actions">
+            <button type="submit" class="btn btn-danger">Tak, anuluj</button>
+            <a class="btn" asp-action="Index">Wróć</a>
+        </div>
+    </form>
+</div>

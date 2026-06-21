@@ -1,0 +1,75 @@
+@{
+    var title    = ViewData["Title"] as string;
+    var userName = Context.Session.GetString("UserName");
+    var isAdmin  = Context.Session.GetString("IsAdmin") == "1";
+    var isLogged = !string.IsNullOrEmpty(userName);
+}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(string.IsNullOrEmpty(title) ? "Riffnation" : title + " | Riffnation")</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark">⚡</span>
+                <span class="brand-text">Riffnation<span class="brand-year">'26</span></span>
+            </a>
+            <nav class="nav">
+                <a asp-controller="Events" asp-action="Index">Wydarzenia</a>
+                <a asp-controller="Bands"  asp-action="Index">Zespoły</a>
+                @if (isLogged)
+                {
+                    <a asp-controller="Reservations" asp-action="Index">Moje bilety</a>
+                    <div class="user-menu">
+                        <button class="user-btn" type="button">
+                            @if (isAdmin) { <span class="admin-crown">★</span> }
+                            <span>@userName</span>
+                            <span class="chevron">▾</span>
+                        </button>
+                        <div class="user-dropdown">
+                            @if (isAdmin)
+                            {
+                                <span class="dropdown-label">Panel admina</span>
+                                <a class="dropdown-item" asp-controller="Events" asp-action="Create">+ Dodaj wydarzenie</a>
+                                <a class="dropdown-item" asp-controller="Bands"  asp-action="Create">+ Dodaj zespół</a>
+                                <hr class="dropdown-hr" />
+                            }
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="dropdown-item">Wyloguj się</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login">Zaloguj się</a>
+                    <a class="nav-cta" asp-controller="Account" asp-action="Register">Załóż konto</a>
+                }
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        @if (TempData["Message"] is string msg)
+        {
+            <div class="flash" role="status">@msg</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <p>Riffnation &mdash; Najlepsze wydarzenia tego roku, na wyciągnięcie ręki &mdash; 2026</p>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

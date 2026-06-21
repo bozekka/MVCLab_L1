@@ -1,0 +1,300 @@
+@model Reservation
+@{
+    ViewData["Title"] = "Nowa rezerwacja";
+    var preselected = ViewBag.SelectedEvent as Riffnation.Models.Event;
+}
+
+<section class="poster-head">
+    <p class="eyebrow">Bilety</p>
+    <h1 class="poster-title">Zarezerwuj bilet</h1>
+</section>
+
+<div class="res-layout">
+   
+    <div class="form-card" style="flex:1;min-width:0">
+        <form asp-action="Create" method="post" id="resForm">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+            <input type="hidden" asp-for="TicketCategory" id="hiddenCategory" />
+            <input type="hidden" asp-for="FestivalDayId"  id="hiddenDayId" />
+
+            <div class="form-group">
+                <label asp-for="EventId">Wydarzeńie</label>
+                <select asp-for="EventId" asp-items="ViewBag.Events" id="eventSelect">
+                    <option value="">-- wybierz wydarzeńie --</option>
+                </select>
+                <span asp-validation-for="EventId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CustomerName">Imię i nazwisko</label>
+                <input asp-for="CustomerName" placeholder="Jan Kowalski" />
+                <span asp-validation-for="CustomerName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email">E-mail</label>
+                <input asp-for="Email" type="email" placeholder="jan@example.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NumberOfTickets">Liczba biletów</label>
+                <input asp-for="NumberOfTickets" type="number" min="1" max="10" id="ticketCount" value="1" />
+                <span asp-validation-for="NumberOfTickets" class="text-danger"></span>
+            </div>
+
+            <div class="actions" style="margin-top:24px">
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Zarezerwuj</button>
+                <a class="btn" asp-controller="Events" asp-action="Index">Anuluj</a>
+            </div>
+        </form>
+    </div>
+
+   
+    <div style="flex:1;min-width:280px;display:flex;flex-direction:column;gap:20px">
+
+        <div id="noEventHint" class="empty" style="margin-top:0">
+            Wybierz wydarzeńie, aby zobaczyc dostępne kategorie biletów i ceny.
+        </div>
+
+     
+        <div id="daysPanel" style="display:none">
+            <h3 class="cat-heading">Wybierz rodzaj wejściówki</h3>
+            <div id="passCards" class="cat-grid"></div>
+
+      
+            <div id="daysList" style="display:none;margin-top:14px">
+                <h3 class="cat-heading">Wybierz dzień</h3>
+                <div id="dayCards" class="cat-grid"></div>
+            </div>
+        </div>
+
+       
+        <div id="categoryPanel" style="display:none">
+            <h3 class="cat-heading" id="catPanelHeading">Kategoria miejsca</h3>
+            <div id="categoryCards" class="cat-grid"></div>
+        </div>
+
+        <div id="summaryBox" class="summary-box" style="display:none">
+            <div class="summary-row">
+                <span>Wybrano</span>
+                <strong id="sumCatName">--</strong>
+            </div>
+            <div class="summary-row" id="sumDayRow" style="display:none">
+                <span>Dzien</span>
+                <strong id="sumDayName">--</strong>
+            </div>
+            <div class="summary-row">
+                <span>Cena za bilet</span>
+                <strong id="sumPrice">--</strong>
+            </div>
+            <div class="summary-row summary-total">
+                <span>Łącznie</span>
+                <strong id="sumTotal">--</strong>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+    var currentData      = null;
+    var selectedCatValue = null;
+    var selectedPrice    = 0;
+    var selectedDayId    = null;
+    var selectedDayLabel = null;
+
+    var eventSelect   = document.getElementById('eventSelect');
+    var ticketCount   = document.getElementById('ticketCount');
+    var hiddenCat     = document.getElementById('hiddenCategory');
+    var hiddenDayId   = document.getElementById('hiddenDayId');
+    var noEventHint   = document.getElementById('noEventHint');
+    var daysPanel     = document.getElementById('daysPanel');
+    var categoryPanel = document.getElementById('categoryPanel');
+    var passCards     = document.getElementById('passCards');
+    var daysList      = document.getElementById('daysList');
+    var dayCards      = document.getElementById('dayCards');
+    var categoryCards = document.getElementById('categoryCards');
+    var summaryBox    = document.getElementById('summaryBox');
+    var submitBtn     = document.getElementById('submitBtn');
+    var sumCatName    = document.getElementById('sumCatName');
+    var sumDayRow     = document.getElementById('sumDayRow');
+    var sumDayName    = document.getElementById('sumDayName');
+    var sumPrice      = document.getElementById('sumPrice');
+    var sumTotal      = document.getElementById('sumTotal');
+
+    function zl(n) { return n + ' zl'; }
+
+    function resetSelection() {
+        selectedCatValue = null;
+        selectedPrice    = 0;
+        selectedDayId    = null;
+        selectedDayLabel = null;
+        hiddenCat.value  = '';
+        hiddenDayId.value = '';
+        submitBtn.disabled = true;
+        summaryBox.style.display = 'none';
+        daysList.style.display   = 'none';
+    }
+
+    function updateSummary() {
+        if (selectedCatValue === null || selectedPrice === 0) return;
+        var n = parseInt(ticketCount.value) || 1;
+        sumPrice.textContent = zl(selectedPrice);
+        sumTotal.textContent = zl(selectedPrice * n);
+        if (selectedDayLabel) {
+            sumDayRow.style.display  = 'flex';
+            sumDayName.textContent   = selectedDayLabel;
+        } else {
+            sumDayRow.style.display  = 'none';
+        }
+        summaryBox.style.display = 'block';
+        submitBtn.disabled = false;
+    }
+
+    ticketCount.addEventListener('input', updateSummary);
+
+    function selectCard(container, clickedCard) {
+        container.querySelectorAll('.cat-card').forEach(function(c) { c.classList.remove('selected'); });
+        clickedCard.classList.add('selected');
+    }
+
+    function buildConcertCategories(data) {
+        var CATS = [
+            { value: 0, key: 'standing', price: data.standing, label: 'Stojace (plyta)', icon: '🎤', desc: '' },
+            { value: 1, key: 'seatedC',  price: data.seatedC,  label: 'Siedzace C',       icon: '💺', desc: 'Dalej od sceny, dobra cena',          badge: 'C' },
+            { value: 2, key: 'seatedB',  price: data.seatedB,  label: 'Siedzace B',       icon: '💺', desc: 'Dobry widok na scene',                badge: 'B' },
+            { value: 3, key: 'seatedA',  price: data.seatedA,  label: 'Siedzace A',       icon: '💺', desc: 'Najlepszy widok, sektory frontowe',    badge: 'A' },
+            { value: 4, key: 'vip',      price: data.vip,      label: 'VIP',              icon: '⭐', desc: 'Strefa VIP + meet & greet',         badge: 'VIP' },
+        ];
+        categoryCards.innerHTML = '';
+        CATS.forEach(function(cat) {
+            if (!cat.price) return;
+            var badgeHtml = cat.badge ? '<span class="cat-badge cat-badge-' + cat.key + '">' + cat.badge + '</span>' : '';
+            var descHtml  = cat.desc  ? '<div class="cat-desc">' + cat.desc + '</div>' : '';
+            var card = document.createElement('div');
+            card.className = 'cat-card';
+            card.innerHTML =
+                '<div class="cat-card-top"><span class="cat-icon">' + cat.icon + '</span>' +
+                '<div><div class="cat-name">' + cat.label + ' ' + badgeHtml + '</div>' + descHtml + '</div></div>' +
+                '<div class="cat-price">' + zl(cat.price) + '</div>';
+            card.addEventListener('click', function() {
+                selectCard(categoryCards, card);
+                selectedCatValue = cat.value;
+                selectedPrice    = cat.price;
+                selectedDayId    = null;
+                selectedDayLabel = null;
+                hiddenCat.value  = cat.value;
+                hiddenDayId.value = '';
+                sumCatName.textContent = cat.label;
+                updateSummary();
+            });
+            categoryCards.appendChild(card);
+        });
+        document.getElementById('catPanelHeading').textContent = 'Kategoria miejsca';
+        categoryPanel.style.display = 'block';
+    }
+
+    function buildFestivalCards(data) {
+        passCards.innerHTML = '';
+        var passes = [];
+        if (data.fullPass > 0)  passes.push({ value: 5, label: 'Karnet – wszystkie dni', icon: '🎫', price: data.fullPass, desc: 'Wstęp na kazdy dzień festiwalu' });
+        if (data.dayTicket > 0) passes.push({ value: 6, label: 'Bilet jednodniowy',      icon: '🎟️', price: data.dayTicket, desc: 'Wejście na wybrany dzien' });
+        if (data.vip > 0)       passes.push({ value: 4, label: 'VIP – karnet',           icon: '⭐', price: data.vip, desc: 'Strefa VIP, backstage, meet & greet' });
+        if (passes.length === 0) passes.push({ value: 0, label: 'Wstęp', icon: '🎤', price: data.standing, desc: '' });
+
+        passes.forEach(function(p) {
+            var card = document.createElement('div');
+            card.className = 'cat-card';
+            card.innerHTML =
+                '<div class="cat-card-top"><span class="cat-icon">' + p.icon + '</span>' +
+                '<div><div class="cat-name">' + p.label + '</div>' +
+                (p.desc ? '<div class="cat-desc">' + p.desc + '</div>' : '') + '</div></div>' +
+                '<div class="cat-price">' + zl(p.price) + '</div>';
+            card.addEventListener('click', function() {
+                selectCard(passCards, card);
+                resetSelection();
+                selectedCatValue = p.value;
+                selectedPrice    = p.price;
+                hiddenCat.value  = p.value;
+                sumCatName.textContent = p.label;
+                if (p.value === 6 && data.isMultiDay && data.days && data.days.length > 0) {
+                    buildDayCards(data.days);
+                    daysList.style.display = 'block';
+                    summaryBox.style.display = 'none';
+                    submitBtn.disabled = true;
+                } else {
+                    daysList.style.display = 'none';
+                    updateSummary();
+                }
+            });
+            passCards.appendChild(card);
+        });
+
+        daysPanel.style.display   = 'block';
+        categoryPanel.style.display = 'none';
+    }
+
+    function buildDayCards(days) {
+        dayCards.innerHTML = '';
+        days.forEach(function(day) {
+            var card = document.createElement('div');
+            card.className = 'day-card';
+            card.innerHTML =
+                '<div class="day-card-header">' +
+                '<span class="day-card-label">' + day.label + '</span>' +
+                '<span class="day-date">' + day.date + '</span>' +
+                '</div>' +
+                '<div class="day-headliners">' + (day.headliners || '') + '</div>';
+            card.addEventListener('click', function() {
+                dayCards.querySelectorAll('.day-card').forEach(function(c) { c.classList.remove('selected'); });
+                card.classList.add('selected');
+                selectedDayId    = day.id;
+                selectedDayLabel = day.label;
+                hiddenDayId.value = day.id;
+                updateSummary();
+            });
+            dayCards.appendChild(card);
+        });
+    }
+
+    function loadEvent(id) {
+        if (!id) {
+            noEventHint.style.display   = 'block';
+            daysPanel.style.display     = 'none';
+            categoryPanel.style.display = 'none';
+            summaryBox.style.display    = 'none';
+            submitBtn.disabled = true;
+            return;
+        }
+        fetch('/Reservations/GetPrices?eventId=' + id)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (!data) return;
+                currentData = data;
+                noEventHint.style.display = 'none';
+                resetSelection();
+                if (data.isFestival) {
+                    buildFestivalCards(data);
+                } else {
+                    daysPanel.style.display = 'none';
+                    buildConcertCategories(data);
+                }
+            });
+    }
+
+    eventSelect.addEventListener('change', function() { loadEvent(this.value); });
+
+    @if (preselected != null)
+    {
+        <text>
+        (function() {
+            eventSelect.value = '@preselected.Id';
+            loadEvent('@preselected.Id');
+          })();
+        </text>
+    }
+    </script>
+}

@@ -1,0 +1,46 @@
+@model Riffnation.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Rejestracja";
+}
+
+<section class="poster-head">
+    <p class="eyebrow">Nowe konto</p>
+    <h1 class="poster-title">Zarejestruj się</h1>
+    <p class="poster-sub">Załóż konto i rezerwuj bilety na najgorętsze wydarzeńia metalowe w Polsce.</p>
+</section>
+
+<div class="auth-wrap">
+    <div class="form-card">
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+            <div class="form-group">
+                <label asp-for="FullName"></label>
+                <input asp-for="FullName" placeholder="Jan Kowalski" autofocus />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="email" placeholder="jan@example.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" type="password" placeholder="min. 6 znaków" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" type="password" placeholder="powtórz hasło" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">Zarejestruj się</button>
+            </div>
+        </form>
+    </div>
+    <p class="auth-alt">Masz już konto? <a asp-action="Login">Zaloguj się</a></p>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,18 @@
+## .NET / Visual Studio
+bin/
+obj/
+.vs/
+*.user
+
+## Baza SQLite generowana lokalnie
+*.db
+*.db-shm
+*.db-wal
+
+## Rider / VS Code
+.idea/
+.vscode/
+
+## System
+.DS_Store
+Thumbs.db

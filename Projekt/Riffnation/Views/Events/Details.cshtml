@@ -1,0 +1,147 @@
+@model Event
+@{
+    ViewData["Title"] = Model.Name;
+    var isAdmin    = Context.Session.GetString("IsAdmin") == "1";
+    var headliners = Model.EventBands.Where(eb => eb.IsHeadliner).Select(eb => eb.Band).ToList();
+    var support    = Model.EventBands.Where(eb => !eb.IsHeadliner).Select(eb => eb.Band).ToList();
+    bool isFest    = Model.EventType == Riffnation.Models.Enums.EventType.Festival;
+    bool isMulti   = Model.FestivalDays != null && Model.FestivalDays.Count > 1;
+    var days       = Model.FestivalDays?.OrderBy(d => d.SortOrder).ToList();
+    var css = Model.Status switch {
+        Riffnation.Models.Enums.TicketStatus.SoldOut    => "badge-sold",
+        Riffnation.Models.Enums.TicketStatus.LowTickets => "badge-low",
+        _                                                       => "badge-ok"
+    };
+}
+
+<section class="poster-head">
+    <p class="eyebrow">@Model.EventType.GetDisplayName() &middot; @Model.Genre.GetDisplayName()</p>
+    <h1 class="poster-title">@Model.Name</h1>
+    <p class="poster-sub">@Model.Description</p>
+</section>
+
+<div class="detail-grid">
+    <div class="detail-card">
+        <h2>Szczegóły</h2>
+        <dl class="kv">
+            <dt>Termin</dt>
+            <dd>@Model.StartDate.ToString("dd.MM.yyyy")@(Model.EndDate.HasValue ? " – " + Model.EndDate.Value.ToString("dd.MM.yyyy") : "")</dd>
+            <dt>Miasto</dt><dd>@Model.City</dd>
+            <dt>Miejsce</dt><dd>@(Model.Venue?.Name ?? "--")</dd>
+            <dt>Gatunek</dt><dd><span class="tag tag-genre">@Model.Genre.GetDisplayName()</span></dd>
+            <dt>Status biletów</dt><dd><span class="@css">@Model.Status.GetDisplayName()</span></dd>
+            <dt>Wolne miejsca</dt><dd>@Model.AvailableSeats / @Model.Capacity</dd>
+        </dl>
+
+        <div class="ticket-pricing">
+            <h3>Ceny biletów</h3>
+            @if (isFest)
+            {
+                @if (Model.PriceFullPass > 0)
+                {
+                    <div class="price-row vip">
+                        <span>🎫 Karnet – wszystkie dni</span>
+                        <strong>@Model.PriceFullPass zl</strong>
+                    </div>
+                }
+                @if (Model.PriceDayTicket > 0)
+                {
+                    <div class="price-row">
+                        <span>🎟️ Bilet jednodniowy</span>
+                        <strong>@Model.PriceDayTicket zl</strong>
+                    </div>
+                }
+                @if (Model.PriceFullPass == 0 && Model.PriceDayTicket == 0)
+                {
+                    <div class="price-row">
+                        <span>🎤 Wstęp</span>
+                        <strong>@Model.PriceStanding zl</strong>
+                    </div>
+                }
+                <div class="price-row vip">
+                    <span>⭐ VIP – strefa VIP + meet &amp; greet</span>
+                    <strong>@Model.PriceVip zl</strong>
+                </div>
+            }
+            else
+            {
+                <div class="price-row"><span>🎤 Stojace – plyta</span><strong>@Model.PriceStanding zl</strong></div>
+                @if (Model.PriceSeatedC > 0) { <div class="price-row"><span>💺 Siedzace C <span class="cat-badge cat-badge-seatedC">C</span></span><strong>@Model.PriceSeatedC zl</strong></div> }
+                @if (Model.PriceSeatedB > 0) { <div class="price-row seated"><span>💺 Siedzace B <span class="cat-badge cat-badge-seatedB">B</span></span><strong>@Model.PriceSeatedB zl</strong></div> }
+                @if (Model.PriceSeatedA > 0) { <div class="price-row seated"><span>💺 Siedzace A <span class="cat-badge cat-badge-seatedA">A</span></span><strong>@Model.PriceSeatedA zl</strong></div> }
+                <div class="price-row vip"><span>⭐ VIP – strefa VIP + meet &amp; greet</span><strong>@Model.PriceVip zl</strong></div>
+            }
+        </div>
+
+        <div class="actions">
+            @if (Model.CanReserve)
+            {
+                <a class="btn btn-primary" asp-controller="Reservations" asp-action="Create" asp-route-eventId="@Model.Id">Zarezerwuj bilet</a>
+            }
+            else { <span class="btn" style="opacity:.4;cursor:not-allowed">Brak biletów</span> }
+            @if (isAdmin)
+            {
+                <a class="btn" asp-action="Edit"   asp-route-id="@Model.Id">Edytuj</a>
+                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Id">Usuń</a>
+            }
+            <a class="btn" asp-action="Index">Lista wydarzeń</a>
+        </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:20px">
+        <!-- Program festiwalu dzien po dniu -->
+        @if (isMulti && days != null && days.Any())
+        {
+            <div class="detail-card">
+                <h2>Program – dzien po dniu</h2>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                @foreach (var day in days)
+                {
+                    <div class="day-card" style="cursor:default">
+                        <div class="day-card-header">
+                            <span class="day-card-label">@day.Label</span>
+                            <span class="day-date">@day.Date.ToString("dd.MM.yyyy")</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(day.HeadlinersText))
+                        {
+                            <div class="day-headliners">@day.HeadlinersText</div>
+                        }
+                    </div>
+                }
+                </div>
+            </div>
+        }
+
+        <!-- Line-up ogolny -->
+        <div class="detail-card">
+            <h2>Line-up</h2>
+            @if (!Model.EventBands.Any())
+            {
+                <p class="muted">Skład nie zostal jeszcze ogloszony.</p>
+            }
+            else
+            {
+                <ul class="lineup">
+                    @foreach (var band in headliners)
+                    {
+                        <li>
+                            <div>
+                                <div><span class="tag tag-hl">Headliner</span> <strong>@band.Name</strong> <span class="muted">&middot; @band.Country</span></div>
+                                @if (!string.IsNullOrEmpty(band.Description)) { <div class="band-desc">@band.Description</div> }
+                            </div>
+                        </li>
+                    }
+                    @foreach (var band in support)
+                    {
+                        <li>
+                            <div>
+                                <div><span class="tag">Support</span> @band.Name <span class="muted">&middot; @band.Country</span></div>
+                                @if (!string.IsNullOrEmpty(band.Description)) { <div class="band-desc">@band.Description</div> }
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+@model IEnumerable<Reservation>
+@{
+    ViewData["Title"] = "Moje bilety";
+}
+
+<section class="poster-head">
+    <p class="eyebrow">Konto</p>
+    <h1 class="poster-title">Moje bilety</h1>
+</section>
+
+<div class="toolbar">
+    <span class="muted">Łącznie: @Model.Count() rezerwacji</span>
+    <a class="btn btn-primary" asp-action="Create">+ Nowa rezerwacja</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty">
+        Nie masz jeszcze żadnych rezerwacji.
+        <a asp-controller="Events" asp-action="Index">Przeglądaj wydarzenia</a>.
+    </div>
+}
+else
+{
+    <div class="table-wrap">
+        <table class="data">
+            <thead>
+                <tr>
+                    <th>Wydarzeńie</th>
+                    <th>Termin</th>
+                    <th>Rodzaj biletu</th>
+                    <th>Cena / bilet</th>
+                    <th>Bilety</th>
+                    <th>Łącznie</th>
+                    <th>Data rez.</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var r in Model)
+            {
+                var catCss = r.TicketCategory switch {
+                    Riffnation.Models.Enums.TicketCategory.Vip      => "cat-badge cat-badge-vip",
+                    Riffnation.Models.Enums.TicketCategory.FullPass  => "cat-badge cat-badge-vip",
+                    Riffnation.Models.Enums.TicketCategory.SeatedA  => "cat-badge cat-badge-seatedA",
+                    Riffnation.Models.Enums.TicketCategory.SeatedB  => "cat-badge cat-badge-seatedB",
+                    Riffnation.Models.Enums.TicketCategory.SeatedC  => "cat-badge cat-badge-seatedC",
+                    _                                                       => "tag"
+                };
+                <tr>
+                    <td class="evt-name">
+                        @if (r.Event != null)
+                        {
+                            <a asp-controller="Events" asp-action="Details" asp-route-id="@r.EventId">@r.Event.Name</a>
+                        }
+                        else { <span>--</span> }
+                    </td>
+                    <td>@(r.Event?.StartDate.ToString("dd.MM.yyyy") ?? "--")</td>
+                    <td>
+                        <span class="@catCss">@r.TicketCategory.GetDisplayName()</span>
+                        @if (!string.IsNullOrEmpty(r.FestivalDayLabel))
+                        {
+                            <div style="font-size:.78rem;color:var(--muted);margin-top:2px">@r.FestivalDayLabel</div>
+                        }
+                    </td>
+                    <td><strong>@r.PricePerTicket zl</strong></td>
+                    <td>@r.NumberOfTickets</td>
+                    <td><strong style="color:var(--gold)">@r.TotalPrice zl</strong></td>
+                    <td class="muted">@r.CreatedAt.ToString("dd.MM.yyyy")</td>
+                    <td><a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@r.Id">Anuluj</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
